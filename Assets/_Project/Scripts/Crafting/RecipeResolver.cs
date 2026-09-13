@@ -73,6 +73,35 @@ public static class RecipeResolver
             }
         }
 
+        // ќпредел€ем, посолено ли блюдо.
+        bool isSalted = AreIngredientsSalted(ingredients);
+
+        // ќбычный рецепт подходит только обычному блюду,
+        // saltedVariant Ч только солЄному.
+        if (recipe.SaltedVariant != isSalted)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool AreIngredientsSalted(
+        IReadOnlyList<IngredientRuntime> ingredients)
+    {
+        if (ingredients.Count == 0)
+        {
+            return false;
+        }
+
+        foreach (IngredientRuntime ingredient in ingredients)
+        {
+            if (ingredient.Seasoning != SeasoningState.Salted)
+            {
+                return false;
+            }
+        }
+
         return true;
     }
 

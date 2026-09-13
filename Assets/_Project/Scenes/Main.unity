@@ -1422,10 +1422,12 @@ MonoBehaviour:
   animator: {fileID: -4748361991329772099, guid: 3f937e305a1ec744882e1620a1f629ad, type: 3}
   happyTrigger: Happy
   leaveTrigger: Leave
+  idleStateName: Idle
   audioSource: {fileID: 650266134}
   barkClip: {fileID: 8300000, guid: ac9911ee20add05458977e6400b1c762, type: 3}
   leaveTarget: {fileID: 766758523}
   leaveDuration: 3
+  returnDelay: 30
 --- !u!82 &650266134
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1435,7 +1437,7 @@ AudioSource:
   m_GameObject: {fileID: 650266130}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 4023660144989665146, guid: 6d80be4f2a665114b939186fbfd41004, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
@@ -14534,7 +14536,7 @@ AudioSource:
   m_GameObject: {fileID: 1694972630}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -2599688774073630373, guid: 6d80be4f2a665114b939186fbfd41004, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 7e3d42228a97a164a95ee29962e09f20, type: 3}
   m_PlayOnAwake: 1
@@ -15190,9 +15192,10 @@ MonoBehaviour:
   stove: {fileID: 8695720819223162281}
   saltIngredient: {fileID: 11400000, guid: 9f950484029557848b0ce01ce6e1f09f, type: 2}
   recipes:
-  - {fileID: 11400000, guid: a03d6f0eb21ea944fafaa6f0be8d51f7, type: 2}
-  - {fileID: 11400000, guid: f67f18e177295df43b374e85b9337b41, type: 2}
   - {fileID: 11400000, guid: fd5a077040fd0d4409f30bc3df82f38a, type: 2}
+  - {fileID: 11400000, guid: 5cf053c41dbe29c48ab02061905f5a19, type: 2}
+  - {fileID: 11400000, guid: f67f18e177295df43b374e85b9337b41, type: 2}
+  - {fileID: 11400000, guid: a69e207e3e19d494f973a1e1f3a162d5, type: 2}
   fryingDuration: 4
   burnAfterReadySeconds: 4
   stirAnimator: {fileID: 0}
@@ -16346,7 +16349,7 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 0.543
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 412cfa84c9b1cd6438f60386638f5e70, type: 3}
-  m_Name: Recipe_EggCheese
+  m_Name: Recipe_EggCheese 1
   m_EditorClassIdentifier: 
-  id: Recipe_MushroomOmelet
+  id: Recipe_MushroomOmelet_Salted
   displayName: "\u041E\u043C\u043B\u0435\u0442 \u0441 \u0441\u044B\u0440\u043E\u043C
     \u0438 \u0433\u0440\u0438\u0431\u043E\u0447\u043A\u043E\u043C"
   requiredIngredients:
@@ -20,5 +20,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6f5e0004356e2c24f909e92024851d96, type: 2}
   - {fileID: 11400000, guid: 80d10e81f09406546858830eaea254d3, type: 2}
   requiredActions: 0000000001000000
-  saltedVariant: 0
+  saltedVariant: 1
   resultPrefab: {fileID: 0}

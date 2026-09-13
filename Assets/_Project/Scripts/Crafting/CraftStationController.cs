@@ -255,14 +255,11 @@ public class CraftStationController : MonoBehaviour
             }
         }
 
-        if (currentRecipe == null)
-        {
-            currentRecipe = RecipeResolver.Resolve(
-                inventory.Ingredients,
-                actions,
-                recipes
-            );
-        }
+        currentRecipe = RecipeResolver.Resolve(
+            inventory.Ingredients,
+            actions,
+            recipes
+        );
 
         bool hasSpoiled =
             inventory.HasSpoiledIngredients();

@@ -24,14 +24,9 @@ public class DishResult
         HasSpoiledIngredients =
             hasSpoiledIngredients;
 
-        bool seasoningIsValid =
-            recipe != null &&
-            (!recipe.SaltedVariant || IsSalted);
-
         IsSuccessful =
             recipe != null &&
             cooking == CookingState.Ready &&
-            !hasSpoiledIngredients &&
-            seasoningIsValid;
+            !hasSpoiledIngredients;
     }
 }

@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 412cfa84c9b1cd6438f60386638f5e70, type: 3}
-  m_Name: Recipe_EggMushroom
+  m_Name: Recipe_BreadCheese 1
   m_EditorClassIdentifier: 
-  id: egg_mushroom
-  displayName: "\u042F\u0438\u0447\u043D\u0438\u0446\u0430 \u0441 \u0433\u0440\u0438\u0431\u0430\u043C\u0438"
+  id: Recipe_Toast_Salted
+  displayName: "\u0413\u043E\u0440\u044F\u0447\u0438\u0439 \u0441\u044B\u0440\u043D\u044B\u0439
+    \u0442\u043E\u0441\u0442"
   requiredIngredients:
-  - {fileID: 11400000, guid: b1c6eb1c8c3f46d4da57f19edf759d89, type: 2}
-  - {fileID: 11400000, guid: 80d10e81f09406546858830eaea254d3, type: 2}
-  requiredActions: 00000000
-  saltedVariant: 0
+  - {fileID: 11400000, guid: 2d74497f670201847807243fdc094e50, type: 2}
+  - {fileID: 11400000, guid: d22c036c82737054f922d9e7f8215af9, type: 2}
+  requiredActions: 0100000000000000
+  saltedVariant: 1
   resultPrefab: {fileID: 0}

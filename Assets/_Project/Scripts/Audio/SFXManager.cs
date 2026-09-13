@@ -17,6 +17,7 @@ public class SFXManager : MonoBehaviour
         GameEvents.StatusMessage += OnStatusMessage;
         GameEvents.Stirred += OnStirred;
         GameEvents.FryingStarted += OnFryingStarted;
+        GameEvents.FryingStopped += OnFryingStopped;
     }
 
     private void OnDisable()
@@ -24,6 +25,7 @@ public class SFXManager : MonoBehaviour
         GameEvents.StatusMessage -= OnStatusMessage;
         GameEvents.Stirred -= OnStirred;
         GameEvents.FryingStarted -= OnFryingStarted;
+        GameEvents.FryingStopped -= OnFryingStopped;
     }
 
     private void OnStirred()
@@ -34,13 +36,24 @@ public class SFXManager : MonoBehaviour
 
     private void OnFryingStarted()
     {
-        if (fryAudioSource != null)
+        if (fryAudioSource != null &&
+            !fryAudioSource.isPlaying)
+        {
             fryAudioSource.Play();
+        }
+    }
+
+    private void OnFryingStopped()
+    {
+        if (fryAudioSource != null)
+        {
+            fryAudioSource.Stop();
+        }
     }
 
     private void OnStatusMessage(string message)
     {
-        if (message.StartsWith("Взято:"))
+        if (message.StartsWith("Готово:"))
         {
             audioSource.Play();
         }

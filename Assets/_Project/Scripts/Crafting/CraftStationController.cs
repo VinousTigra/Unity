@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CraftStationController : MonoBehaviour
 {
+    public static CraftStationController Instance { get; private set; }
+
     [SerializeField]
     private CraftStationInventory inventory;
 
@@ -17,14 +19,18 @@ public class CraftStationController : MonoBehaviour
     private List<RecipeData> recipes = new();
 
     [Header("Cooking")]
-    [SerializeField] private float fryingDuration = 4f;
+    [SerializeField]
+    private float fryingDuration = 4f;
 
     [SerializeField]
     private float burnAfterReadySeconds = 4f;
 
     [Header("Animation")]
-    [SerializeField] private Animator stirAnimator;
-    [SerializeField] private string stirTrigger = "Stir";
+    [SerializeField]
+    private Animator stirAnimator;
+
+    [SerializeField]
+    private string stirTrigger = "Stir";
 
     private readonly List<CraftAction> actions = new();
 
@@ -37,11 +43,59 @@ public class CraftStationController : MonoBehaviour
     private RecipeData currentRecipe;
     private Coroutine fryingCoroutine;
 
+    private bool ingredientsLocked;
+
     public CookingState Cooking => cooking;
+    public bool IngredientsLocked => ingredientsLocked;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Debug.LogWarning(
+                "В сцене найдено несколько CraftStationController."
+            );
+
+            return;
+        }
+
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
+    public bool CanCollectIngredient(IngredientData ingredient)
+    {
+        if (ingredient == null)
+        {
+            return false;
+        }
+
+        if (!ingredientsLocked)
+        {
+            return true;
+        }
+
+        // Соль разрешаем взять даже после загрузки
+        // основных ингредиентов в сковороду.
+        return ingredient == saltIngredient;
+    }
+
+    public void LockIngredients()
+    {
+        ingredientsLocked = true;
+    }
 
     public void Stir()
     {
-        if (inventory.Ingredients.Count == 0)
+        if (inventory == null ||
+            inventory.Ingredients.Count == 0)
         {
             GameEvents.ShowStatus(
                 "Нечего перемешивать"
@@ -61,6 +115,7 @@ public class CraftStationController : MonoBehaviour
         }
 
         GameEvents.RaiseStirred();
+
         GameEvents.ShowStatus(
             "Ингредиенты перемешаны"
         );
@@ -68,7 +123,8 @@ public class CraftStationController : MonoBehaviour
 
     public void ApplySalt()
     {
-        if (!inventory.TryConsume(saltIngredient))
+        if (inventory == null ||
+            !inventory.TryConsume(saltIngredient))
         {
             GameEvents.ShowStatus(
                 "В хранилище нет соли"
@@ -82,12 +138,16 @@ public class CraftStationController : MonoBehaviour
         inventory.SaltAllIngredients();
 
         GameEvents.RaiseSaltApplied();
-        GameEvents.ShowStatus("Блюдо посолено");
+
+        GameEvents.ShowStatus(
+            "Блюдо посолено"
+        );
     }
 
     public void StartFrying()
     {
-        if (inventory.Ingredients.Count == 0)
+        if (inventory == null ||
+            inventory.Ingredients.Count == 0)
         {
             GameEvents.ShowStatus(
                 "Сковородка пустая"
@@ -96,7 +156,8 @@ public class CraftStationController : MonoBehaviour
             return;
         }
 
-        if (!stove.IsReadyForCooking)
+        if (stove == null ||
+            !stove.IsReadyForCooking)
         {
             GameEvents.ShowStatus(
                 "Сковородка ещё не нагрелась"
@@ -109,6 +170,8 @@ public class CraftStationController : MonoBehaviour
         {
             return;
         }
+
+        LockIngredients();
 
         if (!actions.Contains(CraftAction.Fry))
         {
@@ -168,7 +231,8 @@ public class CraftStationController : MonoBehaviour
 
     public void Serve()
     {
-        if (inventory.Ingredients.Count == 0)
+        if (inventory == null ||
+            inventory.Ingredients.Count == 0)
         {
             GameEvents.ShowStatus(
                 "Нет блюда для подачи"
@@ -177,24 +241,18 @@ public class CraftStationController : MonoBehaviour
             return;
         }
 
-        if (cooking == CookingState.Cooking)
-        {
-            if (fryingCoroutine != null)
-            {
-                StopCoroutine(fryingCoroutine);
-                fryingCoroutine = null;
-            }
-
-            cooking = CookingState.Raw;
-
-            GameEvents.RaiseFryingStopped();
-        }
-        else if (fryingCoroutine != null)
+        if (fryingCoroutine != null)
         {
             StopCoroutine(fryingCoroutine);
             fryingCoroutine = null;
 
             GameEvents.RaiseFryingStopped();
+
+            if (cooking == CookingState.Cooking)
+            {
+                // Подали слишком рано.
+                cooking = CookingState.Raw;
+            }
         }
 
         if (currentRecipe == null)
@@ -216,7 +274,6 @@ public class CraftStationController : MonoBehaviour
             hasSpoiled
         );
 
-
         if (!result.IsSuccessful)
         {
             GameEvents.RaiseCraftFailed();
@@ -229,16 +286,23 @@ public class CraftStationController : MonoBehaviour
 
     public void CancelFrying()
     {
-        if (fryingCoroutine != null)
+        if (fryingCoroutine == null)
         {
-            StopCoroutine(fryingCoroutine);
-            fryingCoroutine = null;
+            return;
         }
 
+        StopCoroutine(fryingCoroutine);
+        fryingCoroutine = null;
+
+        // Если сняли блюдо до готовности,
+        // оно снова считается сырым.
         if (cooking == CookingState.Cooking)
         {
             cooking = CookingState.Raw;
         }
+
+        // Если оно уже Ready, мы просто сняли его с огня
+        // и остановили дальнейшее подгорание.
 
         GameEvents.RaiseFryingStopped();
     }
@@ -249,24 +313,35 @@ public class CraftStationController : MonoBehaviour
         {
             StopCoroutine(fryingCoroutine);
             fryingCoroutine = null;
-        }
 
-        GameEvents.RaiseFryingStopped();
+            GameEvents.RaiseFryingStopped();
+        }
 
         ResetStation();
 
-        GameEvents.ShowStatus("Готовка сброшена");
+        GameEvents.ShowStatus(
+            "Готовка сброшена"
+        );
     }
 
     private void ResetStation()
     {
-        inventory.Clear();
+        if (inventory != null)
+        {
+            inventory.Clear();
+        }
+
         actions.Clear();
+
         seasoning = SeasoningState.Unsalted;
         cooking = CookingState.Raw;
         currentRecipe = null;
+        ingredientsLocked = false;
 
-        if (stove != null && stove.Pan != null)
+        if (stove != null &&
+            stove.Pan != null)
+        {
             stove.Pan.ResetAfterCooking();
+        }
     }
 }

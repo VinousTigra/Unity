@@ -3,19 +3,27 @@ using UnityEngine;
 
 public class WorldIngredient : InteractableBase
 {
-    [SerializeField] private IngredientData data;
+    [SerializeField]
+    private IngredientData data;
 
     [Header("Runtime State")]
     [SerializeField]
-    private FreshnessState freshness = FreshnessState.Fresh;
+    private FreshnessState freshness =
+        FreshnessState.Fresh;
 
     [SerializeField]
-    private SeasoningState seasoning = SeasoningState.Unsalted;
+    private SeasoningState seasoning =
+        SeasoningState.Unsalted;
 
     [Header("Respawn")]
-    [SerializeField] private GameObject visualRoot;
-    [SerializeField] private Collider interactionCollider;
-    [SerializeField] private float respawnDelay = 5f;
+    [SerializeField]
+    private GameObject visualRoot;
+
+    [SerializeField]
+    private Collider interactionCollider;
+
+    [SerializeField]
+    private float respawnDelay = 5f;
 
     private bool isAvailable = true;
 
@@ -27,12 +35,14 @@ public class WorldIngredient : InteractableBase
     {
         if (interactionCollider == null)
         {
-            interactionCollider = GetComponent<Collider>();
+            interactionCollider =
+                GetComponent<Collider>();
         }
 
         if (visualRoot == null)
         {
-            Transform visual = transform.Find("Visual");
+            Transform visual =
+                transform.Find("Visual");
 
             if (visual != null)
             {
@@ -48,6 +58,15 @@ public class WorldIngredient : InteractableBase
             return;
         }
 
+        if (data == null)
+        {
+            Debug.LogError(
+                $"{name}: IngredientData не назначен."
+            );
+
+            return;
+        }
+
         CraftStationInventory inventory =
             CraftStationInventory.Instance;
 
@@ -55,6 +74,19 @@ public class WorldIngredient : InteractableBase
         {
             Debug.LogError(
                 "CraftStationInventory отсутствует в сцене."
+            );
+
+            return;
+        }
+
+        CraftStationController station =
+            CraftStationController.Instance;
+
+        if (station != null &&
+            !station.CanCollectIngredient(data))
+        {
+            GameEvents.ShowStatus(
+                "Сначала завершите текущую готовку"
             );
 
             return;
@@ -70,7 +102,9 @@ public class WorldIngredient : InteractableBase
             $"Взято: {data.DisplayName}"
         );
 
-        StartCoroutine(RespawnRoutine());
+        StartCoroutine(
+            RespawnRoutine()
+        );
     }
 
     public void MarkSpoiled()
@@ -92,7 +126,9 @@ public class WorldIngredient : InteractableBase
             interactionCollider.enabled = false;
         }
 
-        yield return new WaitForSeconds(respawnDelay);
+        yield return new WaitForSeconds(
+            respawnDelay
+        );
 
         if (visualRoot != null)
         {

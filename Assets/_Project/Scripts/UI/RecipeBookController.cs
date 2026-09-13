@@ -3,17 +3,32 @@ using UnityEngine.InputSystem;
 
 public class RecipeBookController : MonoBehaviour
 {
-    [SerializeField] private GameObject recipeBookPanel;
+    [SerializeField]
+    private GameObject recipeBookPanel;
 
     private void Start()
     {
         if (recipeBookPanel != null)
+        {
             recipeBookPanel.SetActive(false);
+        }
     }
 
     private void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.bKey.wasPressedThisFrame)
+        if (recipeBookPanel == null)
+        {
+            return;
+        }
+
+        if (recipeBookPanel.activeSelf &&
+            !GameModeController.IsUIOpen)
+        {
+            recipeBookPanel.SetActive(false);
+        }
+
+        if (Keyboard.current != null &&
+            Keyboard.current.bKey.wasPressedThisFrame)
         {
             ToggleBook();
         }
@@ -21,10 +36,25 @@ public class RecipeBookController : MonoBehaviour
 
     private void ToggleBook()
     {
-        if (recipeBookPanel == null)
-            return;
+        bool shouldOpen =
+            !recipeBookPanel.activeSelf;
 
-        bool isOpen = recipeBookPanel.activeSelf;
-        recipeBookPanel.SetActive(!isOpen);
+        recipeBookPanel.SetActive(
+            shouldOpen
+        );
+
+        GameModeController.SetUIOpen(
+            shouldOpen
+        );
+    }
+
+    public void CloseBook()
+    {
+        if (recipeBookPanel != null)
+        {
+            recipeBookPanel.SetActive(false);
+        }
+
+        GameModeController.SetUIOpen(false);
     }
 }

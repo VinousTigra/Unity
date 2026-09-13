@@ -7,31 +7,35 @@ public class GameModeController : MonoBehaviour
 
     private void Start()
     {
-        SetFPSMode();
+        SetUIOpen(false);
     }
 
     private void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.tabKey.wasPressedThisFrame)
+        if (Keyboard.current != null &&
+            Keyboard.current.tabKey.wasPressedThisFrame)
         {
-            if (IsUIOpen)
-                SetFPSMode();
-            else
-                SetUIMode();
+            SetUIOpen(!IsUIOpen);
         }
     }
 
-    private void SetFPSMode()
+    public static void SetUIOpen(bool open)
     {
-        IsUIOpen = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
+        IsUIOpen = open;
 
-    private void SetUIMode()
-    {
-        IsUIOpen = true;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (open)
+        {
+            Cursor.lockState =
+                CursorLockMode.None;
+
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState =
+                CursorLockMode.Locked;
+
+            Cursor.visible = false;
+        }
     }
 }

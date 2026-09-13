@@ -12,8 +12,6 @@ public class PanController : InteractableBase
     private Quaternion initialRotation;
 
     private PanState state = PanState.OnTable;
-
-    // Есть ли ингредиенты в сковороде.
     private bool ingredientsLoaded;
 
     public PanState State => state;
@@ -35,8 +33,6 @@ public class PanController : InteractableBase
 
     public override void Interact()
     {
-        // Если сковорода стоит на плите,
-        // сначала пытаемся загрузить в неё ингредиенты.
         if (state == PanState.OnStove)
         {
             if (!ingredientsLoaded &&
@@ -47,16 +43,9 @@ public class PanController : InteractableBase
                 return;
             }
 
-            if (ingredientsLoaded)
-            {
-                if (craftStation != null)
-                {
-                    craftStation.StartFrying();
-                }
-
-                return;
-            }
-
+            // Если ингредиенты уже загружены,
+            // взаимодействие со сковородкой снимает её с плиты.
+            // Жарка запускается отдельной UI-кнопкой.
             PickUp();
             return;
         }
@@ -73,6 +62,11 @@ public class PanController : InteractableBase
     private void LoadIngredients()
     {
         ingredientsLoaded = true;
+
+        if (craftStation != null)
+        {
+            craftStation.LockIngredients();
+        }
 
         GameEvents.ShowStatus(
             "Ингредиенты добавлены в сковороду"
@@ -144,8 +138,6 @@ public class PanController : InteractableBase
         );
     }
 
-    // Эти методы понадобятся для XR Interaction Toolkit.
-
     public void ResetAfterCooking()
     {
         ingredientsLoaded = false;
@@ -177,6 +169,8 @@ public class PanController : InteractableBase
         }
     }
 
+    // Для будущего XR.
+
     public void NotifyXRGrabbed()
     {
         if (state == PanState.OnStove &&
@@ -184,6 +178,13 @@ public class PanController : InteractableBase
         {
             stove.NotifyPanRemoved();
         }
+
+        if (craftStation != null)
+        {
+            craftStation.CancelFrying();
+        }
+
+        StopAllPanParticles();
 
         state = PanState.Held;
     }

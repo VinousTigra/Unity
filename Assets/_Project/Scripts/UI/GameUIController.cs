@@ -134,4 +134,13 @@ public class GameUIController : MonoBehaviour
     {
         craftStation.Serve();
     }
+
+    public void OnExitClicked()
+    {
+#if UNITY_EDITOR
+    UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
 }

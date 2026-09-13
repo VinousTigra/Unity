@@ -100,12 +100,6 @@ public class FirstPersonController : MonoBehaviour
         if (GameModeController.IsUIOpen)
             return;
 
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame &&
             Cursor.lockState != CursorLockMode.Locked)
         {

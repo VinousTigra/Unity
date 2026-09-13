@@ -35,6 +35,7 @@ public class PanController : InteractableBase
     {
         if (state == PanState.OnStove)
         {
+            // Первый клик — загружаем ингредиенты.
             if (!ingredientsLoaded &&
                 CraftStationInventory.Instance != null &&
                 CraftStationInventory.Instance.Ingredients.Count > 0)
@@ -43,9 +44,22 @@ public class PanController : InteractableBase
                 return;
             }
 
-            // Если ингредиенты уже загружены,
-            // взаимодействие со сковородкой снимает её с плиты.
-            // Жарка запускается отдельной UI-кнопкой.
+            if (ingredientsLoaded && craftStation != null)
+            {
+                // Второй клик — запускаем жарку.
+                if (craftStation.Cooking == CookingState.Raw)
+                {
+                    craftStation.StartFrying();
+                    return;
+                }
+
+                // Если жарка уже началась / блюдо готово /
+                // блюдо сгорело — снимаем сковородку.
+                PickUp();
+                return;
+            }
+
+            // Пустую сковородку можно просто снять.
             PickUp();
             return;
         }

@@ -156,6 +156,8 @@ public class PanController : InteractableBase
             stove.NotifyPanRemoved();
         }
 
+        StopAllPanParticles();
+
         ReturnToStart();
     }
 

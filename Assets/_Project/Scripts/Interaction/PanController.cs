@@ -87,6 +87,13 @@ public class PanController : InteractableBase
             stove.NotifyPanRemoved();
         }
 
+        if (craftStation != null)
+        {
+            craftStation.CancelFrying();
+        }
+
+        StopAllPanParticles();
+
         state = PanState.Held;
 
         if (body != null)
@@ -142,6 +149,30 @@ public class PanController : InteractableBase
     public void ResetAfterCooking()
     {
         ingredientsLoaded = false;
+
+        if (state == PanState.OnStove &&
+            stove != null)
+        {
+            stove.NotifyPanRemoved();
+        }
+
+        ReturnToStart();
+    }
+
+    private void StopAllPanParticles()
+    {
+        ParticleSystem[] particles =
+            GetComponentsInChildren<ParticleSystem>(true);
+
+        foreach (ParticleSystem particle in particles)
+        {
+            particle.Stop(
+                true,
+                ParticleSystemStopBehavior.StopEmittingAndClear
+            );
+
+            particle.Clear(true);
+        }
     }
 
     public void NotifyXRGrabbed()

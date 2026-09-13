@@ -143,4 +143,18 @@ public class GameUIController : MonoBehaviour
         Application.Quit();
 #endif
     }
+
+    public void OnRestartClicked()
+    {
+        if (craftStation != null)
+        {
+            craftStation.RestartCooking();
+        }
+
+        if (resultText != null)
+        {
+            resultText.text = "";
+        }
+    }
+
 }

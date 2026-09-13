@@ -36,4 +36,24 @@ public class CookingVFXManager : MonoBehaviour
         if (fryingSteamVFX != null)
             fryingSteamVFX.Stop();
     }
+
+    public void StopAllVFX()
+    {
+        if (fryingSteamVFX != null)
+        {
+            fryingSteamVFX.Stop(
+                true,
+                ParticleSystemStopBehavior.StopEmittingAndClear
+            );
+        }
+
+        if (burnSmokeVFX != null)
+        {
+            burnSmokeVFX.Stop(
+                true,
+                ParticleSystemStopBehavior.StopEmittingAndClear
+            );
+        }
+    }
+
 }

@@ -227,6 +227,37 @@ public class CraftStationController : MonoBehaviour
         ResetStation();
     }
 
+    public void CancelFrying()
+    {
+        if (fryingCoroutine != null)
+        {
+            StopCoroutine(fryingCoroutine);
+            fryingCoroutine = null;
+        }
+
+        if (cooking == CookingState.Cooking)
+        {
+            cooking = CookingState.Raw;
+        }
+
+        GameEvents.RaiseFryingStopped();
+    }
+
+    public void RestartCooking()
+    {
+        if (fryingCoroutine != null)
+        {
+            StopCoroutine(fryingCoroutine);
+            fryingCoroutine = null;
+        }
+
+        GameEvents.RaiseFryingStopped();
+
+        ResetStation();
+
+        GameEvents.ShowStatus("Готовка сброшена");
+    }
+
     private void ResetStation()
     {
         inventory.Clear();
